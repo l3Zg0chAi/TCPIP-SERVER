@@ -6,7 +6,7 @@ set(SOURCES
     src/Application.cpp
     src/TCPConnection.cpp
     src/TCPCommunicator.cpp
-    src/TCPListener.cpp
+    src/TCPListenner.cpp
 )
 add_executable(tcpserver ${SOURCES})
 target_link_libraries(tcpserver -pthread)
