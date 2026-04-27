@@ -23,12 +23,14 @@ struct ListenInfo {
 };
 
 struct ClientConnInfo {
-    UI_32 sockfd;
+    int sockfd;
     ConnectionID connID;
+    ClientConnInfo(int sock, ConnectionID ID) : sockfd(sock), connID(ID){}
 
     ClientConnInfo& operator=(const ClientConnInfo& other){
         sockfd = other.sockfd;
         connID = other.connID;
+        return *this;
     }
 };
 

@@ -14,6 +14,22 @@ TCPListenner::TCPListenner(ListenInfo info, TCPCommunicator* ser_comm) :
     DEBUG_LOG("Listenner is created with ip %s port %d", _listeninfo.serverADDR.c_str(), _listeninfo.serverPort);
 }
 
+TCPListenner::~TCPListenner()
+{
+    stop();
+}
+
+void TCPListenner::stop()
+{
+    if (_listenfd < 0){
+        close(_listenfd);
+        _listenfd = -1;
+    }
+    if (_acceptThread.joinable()){
+        _acceptThread.join();
+    }
+}
+
 bool TCPListenner::open_listenner()
 {
     if ((_listenfd = socket(AF_INET, SOCK_STREAM, 0)) == -1){
@@ -29,17 +45,17 @@ bool TCPListenner::open_listenner()
 
     // bind server addr and port to socket
     if (bind(_listenfd, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == -1){
-        DEBUG_LOG("bind ip %s and port %u server fail", _listenfd.serverADDR.c_str(), _listenfd.serverPort);
+        DEBUG_LOG("bind ip %s and port %u server fail", _listeninfo.serverADDR.c_str(), _listeninfo.serverPort);
         return false;
     } else {
-        DEBUG_LOG("bind ip %s and port %u server success", _listenfd.serverADDR.c_str(), _listenfd.serverPort);
+        DEBUG_LOG("bind ip %s and port %u server success", _listeninfo.serverADDR.c_str(), _listeninfo.serverPort);
     }
 
     if (listen(_listenfd, 1) == -1){
         DEBUG_LOG("bind fail errno=%d error=%s", errno, strerror(errno));
         return false;
     } else {
-        DEBUG_LOG("Listenning on ip %s and port %u server...", _listenfd.serverADDR.c_str(), _listenfd.serverPort);
+        DEBUG_LOG("Listenning on ip %s and port %u server...", _listeninfo.serverADDR.c_str(), _listeninfo.serverPort);
     }
 
     _acceptThread = std::thread(&TCPListenner::acceptWorker, this);

@@ -29,11 +29,11 @@ bool TCPCommunicator::onAcceptedClient(int clientfd)
     TCPConnection* rawConn = clientConn.get();
     {
         std::lock_guard<std::mutex> lockCon(_connectsMutex);
-        _connections[_connID] = std::move(clientConn);
+        _connections[_connID.load()] = std::move(clientConn);
     }
 
     rawConn->start();
-    return false;
+    return true;
 }
 
 // void TCPCommunicator::pushToQueue(Packet value)

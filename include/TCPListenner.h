@@ -8,8 +8,9 @@ class TCPCommunicator;
 class TCPListenner{
 public:
     TCPListenner(ListenInfo info, TCPCommunicator* sercommun);
+    ~TCPListenner();
     bool open_listenner();
-
+    void stop();
     void acceptWorker();
 private:
     int _listenfd;

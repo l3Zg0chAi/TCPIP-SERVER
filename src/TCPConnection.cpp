@@ -33,6 +33,9 @@ void TCPConnection::stop()
     if (_rxThread.joinable()){
         _rxThread.join();
     }
+    if (_txThread.joinable()){
+        _txThread.join();
+    }
 }
 
 void TCPConnection::start()
