@@ -18,6 +18,7 @@ public:
     }
 
     TCPCommunicator();
+    ~TCPCommunicator();
 
     void start();
     bool onAcceptedClient(int clientfd);

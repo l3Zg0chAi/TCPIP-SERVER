@@ -14,6 +14,10 @@ TCPCommunicator::TCPCommunicator()
     _connID.store(0);
 }
 
+TCPCommunicator::~TCPCommunicator()
+{
+}
+
 void TCPCommunicator::start()
 {
     for (const auto& listenner : _listenners){
