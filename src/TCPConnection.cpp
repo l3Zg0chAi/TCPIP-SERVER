@@ -57,20 +57,6 @@ void TCPConnection::setState(ESTATE_CONNECTIONS state)
 void TCPConnection::rxWorker()
 {
     setCurrentThreadName("rxThread" + std::to_string(_info.connID));
-    while(true){
-        if (_stopFlag) return;
-        switch(_state){
-            case ESTATE_CONNECTIONS::CONNECTED:
-                if(!receive_from_client()){
-                    setState(ESTATE_CONNECTIONS::CLOSED);
-                }
-                break;
-            case ESTATE_CONNECTIONS::CLOSED:
-                close_connection();
-                setState(ESTATE_CONNECTIONS::INIT);
-                break;
-        }
-    }
 }
 
 void TCPConnection::txWorker()

@@ -51,6 +51,7 @@ void TCPListenner::acceptWorker()
     setCurrentThreadName("acceptThread" + std::to_string(_listeninfo.serverPort));
     struct sockaddr_in clientAddr{};
     socklen_t clientLen = sizeof(clientAddr);
+    DEBUG_LOG("waiting client connect to ...");
     int client_fd = accept(_listenfd, (struct sockaddr*)&clientAddr, &clientLen);
     if(client_fd < 0){
         DEBUG_LOG("accept fail errno=%d error=%s", errno, strerror(errno));
