@@ -22,7 +22,7 @@ TCPListenner::~TCPListenner()
 void TCPListenner::stop()
 {
     if (_stopFlag) return;
-    _stopFlag(true);
+    _stopFlag = true;
     if (_listenfd >= 0){
         close(_listenfd);
         _listenfd = -1;
