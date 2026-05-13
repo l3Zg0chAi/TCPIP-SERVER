@@ -3,6 +3,8 @@
 #include "CommonDef.h"
 #include <thread>
 #include <mutex>
+#include <atomic>
+
 class TCPCommunicator;
 
 class TCPListenner{

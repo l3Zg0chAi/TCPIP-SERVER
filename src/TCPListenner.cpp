@@ -22,7 +22,7 @@ TCPListenner::~TCPListenner()
 void TCPListenner::stop()
 {
     if (_stopFlag) return;
-    _stopFlag = true;
+    _stopFlag(true);
     if (_listenfd >= 0){
         close(_listenfd);
         _listenfd = -1;
@@ -66,7 +66,7 @@ bool TCPListenner::open_listenner()
 
 void TCPListenner::acceptWorker()
 {
-    setCurrentThreadName("acceptThread" + std::to_string(_listeninfo.serverPort));
+    setCurrentThreadName("act_Th " + std::to_string(_listeninfo.serverPort));
     struct sockaddr_in clientAddr{};
     socklen_t clientLen = sizeof(clientAddr);
     DEBUG_LOG("waiting client connect to ...");
