@@ -15,6 +15,7 @@ public:
 private:
     int _listenfd;
     ListenInfo _listeninfo;
+    std::atomic<bool> _stopFlag;
 
     std::thread _acceptThread;
     std::mutex _acceptMtx;

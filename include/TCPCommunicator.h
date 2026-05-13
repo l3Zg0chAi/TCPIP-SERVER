@@ -29,7 +29,7 @@ public:
 private:
     std::unordered_map<ListenID, std::unique_ptr<TCPListenner>> _listenners;
     std::unordered_map<ConnectionID, std::unique_ptr<TCPConnection>> _connections;
-    std::atomic<UI_32> _connID;
+    std::atomic<UI_8> _connID;
     std::mutex _connectsMutex;
     // ThreadSafeQueue<Packet> _txQueueAllConn;
 };

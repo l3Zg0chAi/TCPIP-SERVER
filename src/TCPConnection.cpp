@@ -20,7 +20,8 @@ bool TCPConnection::receive_from_client()
 
 void TCPConnection::close_connection()
 {
-    if (_info.sockfd != -1){
+    if (_info.sockfd >= 0){
+        shutdown(_info.sockfd, SHUT_RDWR);
         close(_info.sockfd);
         _info.sockfd = -1;
     }
@@ -28,6 +29,7 @@ void TCPConnection::close_connection()
 
 void TCPConnection::stop()
 {
+    if (_stopFlag) return;
     close_connection();
     _stopFlag = true;
     if (_rxThread.joinable()){

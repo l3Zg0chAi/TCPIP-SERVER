@@ -9,7 +9,7 @@
 #include "TCPCommunicator.h"
 
 TCPListenner::TCPListenner(ListenInfo info, TCPCommunicator* ser_comm) :
-    _listeninfo(info), _listenfd(-1), _servercomm(ser_comm)
+    _listeninfo(info), _listenfd(-1), _servercomm(ser_comm), _stopFlag(false)
 {
     DEBUG_LOG("Listenner is created with ip %s port %d", _listeninfo.serverADDR.c_str(), _listeninfo.serverPort);
 }
@@ -21,7 +21,9 @@ TCPListenner::~TCPListenner()
 
 void TCPListenner::stop()
 {
-    if (_listenfd < 0){
+    if (_stopFlag) return;
+    _stopFlag = true;
+    if (_listenfd >= 0){
         close(_listenfd);
         _listenfd = -1;
     }
@@ -68,16 +70,18 @@ void TCPListenner::acceptWorker()
     struct sockaddr_in clientAddr{};
     socklen_t clientLen = sizeof(clientAddr);
     DEBUG_LOG("waiting client connect to ...");
-    int client_fd = accept(_listenfd, (struct sockaddr*)&clientAddr, &clientLen);
-    if(client_fd < 0){
-        DEBUG_LOG("accept fail errno=%d error=%s", errno, strerror(errno));
-        return;
+    while (!_stopFlag){
+        int client_fd = accept(_listenfd, (struct sockaddr*)&clientAddr, &clientLen);
+        if(client_fd < 0){
+            DEBUG_LOG("accept fail errno=%d error=%s", errno, strerror(errno));
+            if (_stopFlag) break;   
+        }
+
+        // show infomation of client
+        std::string clientIp = inet_ntoa(clientAddr.sin_addr);
+        UI_16 clientPort = ntohs(clientAddr.sin_port);
+        DEBUG_LOG("accepted client %s:%u", clientIp.c_str(), clientPort);
+
+        _servercomm->onAcceptedClient(client_fd);
     }
-
-    // show infomation of client
-    std::string clientIp = inet_ntoa(clientAddr.sin_addr);
-    UI_16 clientPort = ntohs(clientAddr.sin_port);
-    DEBUG_LOG("accepted client %s:%u", clientIp.c_str(), clientPort);
-
-    _servercomm->onAcceptedClient(client_fd);
 }
