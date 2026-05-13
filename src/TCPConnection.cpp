@@ -62,7 +62,7 @@ void TCPConnection::setState(ESTATE_CONNECTIONS state)
 void TCPConnection::rxWorker()
 {
     setCurrentThreadName("rxThread" + std::to_string(_info.connID));
-    whille(!_stopFlag){
+    while(!_stopFlag){
 
     }
 }
@@ -70,7 +70,7 @@ void TCPConnection::rxWorker()
 void TCPConnection::txWorker()
 {
     setCurrentThreadName("txThread" + std::to_string(_info.connID));
-    whille(!_stopFlag){
+    while(!_stopFlag){
         
     }
 }
