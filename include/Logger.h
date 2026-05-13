@@ -3,6 +3,9 @@
 #include <pthread.h>
 #include <string>
 #include <cstring>
+#include <sys/syscall.h>
+#include <unistd.h>
+
 inline const char* getCurrentThreadName() {
     thread_local char name[16] = {};
     pthread_getname_np(pthread_self(), name, sizeof(name));
@@ -24,7 +27,7 @@ inline void setCurrentThreadName(const std::string& name){
 
 #define DEBUG_LOG(fmt, ...) \
     do { \
-        std::fprintf(stderr, "[tid=%d][tname=%s][%s:%d][%s()] " fmt "\n", \
+        std::fprintf(stderr, "[%d][%s][%s:%d][%s()] " fmt "\n", \
             static_cast<int>(gettid()), \
             getCurrentThreadName(), \
             __FILE__, __LINE__, __func__, ##__VA_ARGS__); \

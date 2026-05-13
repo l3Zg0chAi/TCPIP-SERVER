@@ -15,7 +15,7 @@ typedef UI_8 ConnectionID;
 #define ListenID_TWO 2U
 #define ListenID_THREE 3U
 
-#define SERVER_IP ""
+#define SERVER_IP "192.168.24.128"
 
 struct ListenInfo {
     std::string serverADDR;
