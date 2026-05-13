@@ -34,6 +34,7 @@ bool TCPCommunicator::onAcceptedClient(int clientfd)
     {
         std::lock_guard<std::mutex> lockCon(_connectsMutex);
         _connections[_connID.load()] = std::move(clientConn);
+        DEBUG_LOG("size of _connections %d", _connections.size());
     }
 
     rawConn->start();

@@ -74,7 +74,8 @@ void TCPListenner::acceptWorker()
         int client_fd = accept(_listenfd, (struct sockaddr*)&clientAddr, &clientLen);
         if(client_fd < 0){
             DEBUG_LOG("accept fail errno=%d error=%s", errno, strerror(errno));
-            if (_stopFlag) break;   
+            if (_stopFlag) break;
+            continue;
         }
 
         // show infomation of client

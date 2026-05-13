@@ -4,7 +4,7 @@
 TCPConnection::TCPConnection(ClientConnInfo info) 
     : _info(info), _stopFlag(true), _state(ESTATE_CONNECTIONS::CLOSED)
 {
-    DEBUG_LOG ("Constructor TCPConnection objejct");
+    DEBUG_LOG ("Constructor TCPConnection objejct with ID %u", _info.connID);
 }
 
 TCPConnection::~TCPConnection()
@@ -62,12 +62,17 @@ void TCPConnection::setState(ESTATE_CONNECTIONS state)
 void TCPConnection::rxWorker()
 {
     setCurrentThreadName("rxThread" + std::to_string(_info.connID));
+    whille(!_stopFlag){
+
+    }
 }
 
 void TCPConnection::txWorker()
 {
     setCurrentThreadName("txThread" + std::to_string(_info.connID));
-
+    whille(!_stopFlag){
+        
+    }
 }
 
 void TCPConnection::config_optional_socket()
