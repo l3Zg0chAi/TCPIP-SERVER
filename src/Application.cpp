@@ -14,6 +14,8 @@ void Application::execute()
     while (true){
         DEBUG_LOG("start execute");
         receive_from_client();
+
+        TCPCommunicator::get_instance()->onRemovedClient();
         DEBUG_LOG("end execute");
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }

@@ -41,6 +41,19 @@ bool TCPCommunicator::onAcceptedClient(int clientfd)
     return true;
 }
 
+bool TCPCommunicator::onRemovedClient()
+{
+    for (auto it = _connections.begin(); it != _connections.end(); ) {
+        if (it->second->isStopped()) {
+            DEBUG_LOG("erase conn id=%u", it->first);
+            it = _connections.erase(it);
+        } else {
+            ++it;
+        }
+    }
+    return true;
+}
+
 // void TCPCommunicator::pushToQueue(Packet value)
 // {
 //     _rxQueueAllConn.push(value);

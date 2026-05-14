@@ -22,6 +22,7 @@ public:
 
     void start();
     bool onAcceptedClient(int clientfd);
+    bool onRemovedClient();
     // void pushToQueue(Packet value);
     // bool receive_packet(Packet& value);
 

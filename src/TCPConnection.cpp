@@ -12,12 +12,6 @@ TCPConnection::~TCPConnection()
     stop();
 }
 
-bool TCPConnection::receive_from_client()
-{
-    // nhận từ recv, push vào queue
-    return false;
-}
-
 void TCPConnection::close_connection()
 {
     if (_info.sockfd >= 0){
@@ -29,7 +23,6 @@ void TCPConnection::close_connection()
 
 void TCPConnection::stop()
 {
-    if (_stopFlag) return;
     close_connection();
     _stopFlag = true;
     if (_rxThread.joinable()){
@@ -37,6 +30,18 @@ void TCPConnection::stop()
     }
     if (_txThread.joinable()){
         _txThread.join();
+    }
+}
+
+bool TCPConnection::isStopped()
+{
+    return _stopFlag;
+}
+
+void TCPConnection::setState(ESTATE_CONNECTIONS state)
+{
+    if (state != _state){
+        _state = state;
     }
 }
 
@@ -52,18 +57,74 @@ void TCPConnection::start()
     _txThread = std::thread(&TCPConnection::txWorker, this);
 }
 
-void TCPConnection::setState(ESTATE_CONNECTIONS state)
+bool TCPConnection::receive_from_client()
 {
-    if (state != _state){
-        _state = state;
+    int ret = read_pdu();
+    if (ret < 0){
+        if (ret == -2){
+            DEBUG_LOG("CLOSE BY PEER");
+        } else {
+            DEBUG_LOG("CLOSE BY RST");
+        }
+        return false;
     }
+    if ( ret > 0){
+        DEBUG_LOG("read pdu success with %d bytes", ret);
+    }
+    return true;
+}
+
+int TCPConnection::read_pdu()
+{
+    fd_set readfds;
+    FD_ZERO(&readfds);
+    FD_SET(_info.sockfd, &readfds
+    struct timeval timeout;
+    timeout.tv_sec = 2;   // 2 second
+    timeout.tv_usec = 
+    int ret = select(_info.sockfd + 1, &readfds, nullptr, nullptr, &timeout);
+    if (ret == 0){
+        DEBUG_LOG("no data comes");
+    }
+    else if (ret < 0){
+        if (errno == EINTR) continue;
+        DEBUG_LOG("select fail errno=%d error=%s", errno, strerror(errno));
+    } 
+    else (ret > 0) {
+        ret = recv(_info.sockfd, buffer, sizeof(buffer), 0);
+        if ( ret > 0){
+            DEBUG_LOG("recv %d bytes", ret);
+        }
+        else if (ret == 0){
+            // close by peer, client close
+            DEBUG_LOG("close by peer mean client close socket connection");
+            ret == -2; // FIN
+        }
+        else (ret < 0){
+            if (errno == EINTR) continue;
+                DEBUG_LOG("recv fail errno=%d error=%s", errno, strerror(errno));
+        }
+    }
+    return ret;
 }
 
 void TCPConnection::rxWorker()
 {
     setCurrentThreadName("rxThread" + std::to_string(_info.connID));
+    char buffer[1024];
     while(!_stopFlag){
-
+        switch(_state){
+            case ESTATE_CONNECTIONS::CONNECTED:{
+                if (!receive_from_client()){
+                    setState(ESTATE_CONNECTIONS::CLOSED);
+                }
+                break;
+            }
+            case ESTATE_CONNECTIONS::CLOSED:{
+                _stopFlag =  true;
+                break;
+            }
+        }
     }
 }
 
@@ -73,8 +134,4 @@ void TCPConnection::txWorker()
     while(!_stopFlag){
         
     }
-}
-
-void TCPConnection::config_optional_socket()
-{
 }

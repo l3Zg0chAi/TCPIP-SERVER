@@ -22,16 +22,18 @@ public:
     explicit TCPConnection(ClientConnInfo info);
     ~TCPConnection();
     bool receive_from_client();
+    int read_pdu();
     void close_connection();
     void stop();
     void start();
+    bool isStopped();
 
     void setState(ESTATE_CONNECTIONS state);
 
 private:
     void rxWorker();
     void txWorker();
-    void config_optional_socket();
+
 private:
     std::thread _rxThread;
     std::mutex _rxMutex;
