@@ -2,7 +2,7 @@
 #include "Logger.h"
 
 TCPConnection::TCPConnection(ClientConnInfo info) 
-    : _info(info), _stopFlag(false), _state(ESTATE_CONNECTIONS::CLOSED)
+    : _info(info), _stopFlag(true), _state(ESTATE_CONNECTIONS::CLOSED)
 {
     DEBUG_LOG ("Constructor TCPConnection objejct with ID %u", _info.connID);
 }
