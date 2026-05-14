@@ -76,21 +76,21 @@ bool TCPConnection::receive_from_client()
 
 int TCPConnection::read_pdu()
 {
+    char buffer[1024];
     fd_set readfds;
     FD_ZERO(&readfds);
-    FD_SET(_info.sockfd, &readfds
+    FD_SET(_info.sockfd, &readfds);
     struct timeval timeout;
     timeout.tv_sec = 2;   // 2 second
-    timeout.tv_usec = 
+    timeout.tv_usec = 0;
     int ret = select(_info.sockfd + 1, &readfds, nullptr, nullptr, &timeout);
     if (ret == 0){
         DEBUG_LOG("no data comes");
     }
     else if (ret < 0){
-        if (errno == EINTR) continue;
         DEBUG_LOG("select fail errno=%d error=%s", errno, strerror(errno));
     } 
-    else (ret > 0) {
+    else{
         ret = recv(_info.sockfd, buffer, sizeof(buffer), 0);
         if ( ret > 0){
             DEBUG_LOG("recv %d bytes", ret);
@@ -100,9 +100,8 @@ int TCPConnection::read_pdu()
             DEBUG_LOG("close by peer mean client close socket connection");
             ret == -2; // FIN
         }
-        else (ret < 0){
-            if (errno == EINTR) continue;
-                DEBUG_LOG("recv fail errno=%d error=%s", errno, strerror(errno));
+        else {
+            DEBUG_LOG("recv fail errno=%d error=%s", errno, strerror(errno));
         }
     }
     return ret;
@@ -111,7 +110,6 @@ int TCPConnection::read_pdu()
 void TCPConnection::rxWorker()
 {
     setCurrentThreadName("rxThread" + std::to_string(_info.connID));
-    char buffer[1024];
     while(!_stopFlag){
         switch(_state){
             case ESTATE_CONNECTIONS::CONNECTED:{
