@@ -32,6 +32,7 @@ private:
     std::unordered_map<ConnectionID, std::unique_ptr<TCPConnection>> _connections;
     std::atomic<UI_8> _connID;
     std::mutex _connectsMutex;
+    std::mutex _removesMutex;
     // ThreadSafeQueue<Packet> _txQueueAllConn;
 };
 

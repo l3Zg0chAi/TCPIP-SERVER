@@ -43,9 +43,14 @@ bool TCPCommunicator::onAcceptedClient(int clientfd)
 
 bool TCPCommunicator::onRemovedClient()
 {
+    // use this - dont lock when call destructor TCPConnection, dont call stop and join thread in mutex lock
+    std::vector<std::unique_ptr<TCPConnection>> removed;
+    std::lock_guard<std::mutex> lock_rem(_removesMutex);
     for (auto it = _connections.begin(); it != _connections.end(); ) {
         if (it->second->isStopped()) {
             DEBUG_LOG("erase conn id=%u", it->first);
+
+            removed.push_back(std::move(it->second));
             it = _connections.erase(it);
         } else {
             ++it;

@@ -2,7 +2,7 @@
 #include "Logger.h"
 
 TCPConnection::TCPConnection(ClientConnInfo info) 
-    : _info(info), _stopFlag(true), _state(ESTATE_CONNECTIONS::CLOSED)
+    : _info(info), _stopFlag(false), _state(ESTATE_CONNECTIONS::CLOSED)
 {
     DEBUG_LOG ("Constructor TCPConnection objejct with ID %u", _info.connID);
 }
@@ -53,6 +53,7 @@ void TCPConnection::start()
         return;
     }                                                        
     _stopFlag = false;
+    setState(ESTATE_CONNECTIONS::CONNECTED);
     _rxThread = std::thread(&TCPConnection::rxWorker, this);
     _txThread = std::thread(&TCPConnection::txWorker, this);
 }
@@ -98,7 +99,7 @@ int TCPConnection::read_pdu()
         else if (ret == 0){
             // close by peer, client close
             DEBUG_LOG("close by peer mean client close socket connection");
-            ret == -2; // FIN
+            ret = -2; // FIN
         }
         else {
             DEBUG_LOG("recv fail errno=%d error=%s", errno, strerror(errno));
