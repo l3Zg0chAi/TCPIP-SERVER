@@ -104,6 +104,7 @@ int TCPConnection::read_pdu()
             DEBUG_LOG("recv fail errno=%d error=%s", errno, strerror(errno));
         }
     }
+    DEBUG_LOG("ret %u", ret);
     return ret;
 }
 
