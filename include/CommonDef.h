@@ -38,7 +38,7 @@ struct Packet {
 
 };
 
-const std::unordered_map<ListenID, ListenInfo> ListennerInfoTable = {
+const std::unordered_map<ListenID, ListenInfo> ListenerInfoTable = {
     {ListenID_ONE,   {SERVER_IP, 10001}},
     {ListenID_TWO,   {SERVER_IP, 10002}},
     {ListenID_THREE, {SERVER_IP, 10003}}

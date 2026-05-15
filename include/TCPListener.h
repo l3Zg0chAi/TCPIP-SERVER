@@ -1,5 +1,5 @@
-#ifndef TCP_LISTENNER
-#define TCP_LISTENNER
+#ifndef TCP_LISTENER
+#define TCP_LISTENER
 #include "CommonDef.h"
 #include <thread>
 #include <mutex>
@@ -24,4 +24,4 @@ private:
     TCPCommunicator* _servercomm;
 };
 
-#endif // TCP_LISTENNER
+#endif // TCP_LISTENER

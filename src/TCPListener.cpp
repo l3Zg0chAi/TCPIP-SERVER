@@ -11,7 +11,7 @@
 TCPListener::TCPListener(ListenInfo info, TCPCommunicator* ser_comm) :
     _listeninfo(info), _listenfd(-1), _servercomm(ser_comm), _stopFlag(true)
 {
-    DEBUG_LOG("Listenner is created with ip %s port %d", _listeninfo.serverADDR.c_str(), _listeninfo.serverPort);
+    DEBUG_LOG("Listener is created with ip %s port %d", _listeninfo.serverADDR.c_str(), _listeninfo.serverPort);
 }
 
 TCPListener::~TCPListener()
@@ -32,7 +32,7 @@ void TCPListener::stop()
     }
 }
 
-bool TCPListener::open_listenner()
+bool TCPListener::open_listener()
 {
     if (!_stopFlag.load()) {
         DEBUG_LOG("already open listener socket");
