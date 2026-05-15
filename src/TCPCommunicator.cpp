@@ -6,9 +6,9 @@
 TCPCommunicator::TCPCommunicator()
 {
     setCurrentThreadName("TCPCommunicator");
-    DEBUG_LOG("create all listenner connections object");
-    for (const auto& listenner : ListennerInfoTable){
-        _listenners[listenner.first] = std::make_unique<TCPListener>(listenner.second, this);
+    DEBUG_LOG("create all listener connections object");
+    for (const auto& listener : ListenerInfoTable){
+        _listeners[listener.first] = std::make_unique<TCPListener>(listener.second, this);
     }
 
     _connID.store(0);
@@ -20,8 +20,8 @@ TCPCommunicator::~TCPCommunicator()
 
 void TCPCommunicator::start()
 {
-    for (const auto& listenner : _listenners){
-        listenner.second->open_listenner();
+    for (const auto& listener : _listeners){
+        listener.second->open_listener();
     }
 }
 
