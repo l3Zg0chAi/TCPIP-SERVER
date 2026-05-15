@@ -9,7 +9,7 @@
 #include "TCPCommunicator.h"
 
 TCPListenner::TCPListenner(ListenInfo info, TCPCommunicator* ser_comm) :
-    _listeninfo(info), _listenfd(-1), _servercomm(ser_comm), _stopFlag(false)
+    _listeninfo(info), _listenfd(-1), _servercomm(ser_comm), _stopFlag(true)
 {
     DEBUG_LOG("Listenner is created with ip %s port %d", _listeninfo.serverADDR.c_str(), _listeninfo.serverPort);
 }
@@ -21,12 +21,12 @@ TCPListenner::~TCPListenner()
 
 void TCPListenner::stop()
 {
-    if (_stopFlag) return;
-    _stopFlag = true;
     if (_listenfd >= 0){
+        shutdown(_listenfd, SHUT_RDWR);
         close(_listenfd);
         _listenfd = -1;
     }
+    _stopFlag.store(true);;
     if (_acceptThread.joinable()){
         _acceptThread.join();
     }
@@ -34,6 +34,12 @@ void TCPListenner::stop()
 
 bool TCPListenner::open_listenner()
 {
+    if (!_stopFlag.load()) {
+        DEBUG_LOG("already open listener socket");
+        return;
+    }
+    _stopFlag.store(false);
+
     if ((_listenfd = socket(AF_INET, SOCK_STREAM, 0)) == -1){
         DEBUG_LOG("bind fail errno=%d error=%s", errno, strerror(errno));
         return false;
@@ -70,11 +76,11 @@ void TCPListenner::acceptWorker()
     struct sockaddr_in clientAddr{};
     socklen_t clientLen = sizeof(clientAddr);
     DEBUG_LOG("waiting client connect to ...");
-    while (!_stopFlag){
+    while (!_stopFlag.load()){
         int client_fd = accept(_listenfd, (struct sockaddr*)&clientAddr, &clientLen);
         if(client_fd < 0){
             DEBUG_LOG("accept fail errno=%d error=%s", errno, strerror(errno));
-            if (_stopFlag) break;
+            if (_stopFlag.load()) break;
             continue;
         }
 

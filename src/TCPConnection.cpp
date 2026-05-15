@@ -24,7 +24,7 @@ void TCPConnection::close_connection()
 void TCPConnection::stop()
 {
     close_connection();
-    _stopFlag = true;
+    _stopFlag.store(true);
     if (_rxThread.joinable()){
         _rxThread.join();
     }
@@ -35,7 +35,7 @@ void TCPConnection::stop()
 
 bool TCPConnection::isStopped()
 {
-    return _stopFlag;
+    return _stopFlag.load();
 }
 
 void TCPConnection::setState(ESTATE_CONNECTIONS state)
@@ -48,11 +48,11 @@ void TCPConnection::setState(ESTATE_CONNECTIONS state)
 void TCPConnection::start()
 {
     DEBUG_LOG("connection was established");
-    if (!_stopFlag){
+    if (!_stopFlag.load()){
         DEBUG_LOG("connection already running");
         return;
     }                                                        
-    _stopFlag = false;
+    _stopFlag.store(false);
     setState(ESTATE_CONNECTIONS::CONNECTED);
     _rxThread = std::thread(&TCPConnection::rxWorker, this);
     _txThread = std::thread(&TCPConnection::txWorker, this);
@@ -112,7 +112,7 @@ int TCPConnection::read_pdu()
 void TCPConnection::rxWorker()
 {
     setCurrentThreadName("rxThread" + std::to_string(_info.connID));
-    while(!_stopFlag){
+    while(!_stopFlag.load()){
         switch(_state){
             case ESTATE_CONNECTIONS::CONNECTED:{
                 if (!receive_from_client()){
@@ -121,7 +121,7 @@ void TCPConnection::rxWorker()
                 break;
             }
             case ESTATE_CONNECTIONS::CLOSED:{
-                _stopFlag =  true;
+                _stopFlag.store(true);
                 break;
             }
         }
@@ -131,7 +131,7 @@ void TCPConnection::rxWorker()
 void TCPConnection::txWorker()
 {
     setCurrentThreadName("txThread" + std::to_string(_info.connID));
-    while(!_stopFlag){
+    while(!_stopFlag.load()){
         
     }
 }
