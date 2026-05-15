@@ -1,6 +1,6 @@
 #include "TCPCommunicator.h"
 #include "Logger.h"
-#include "TCPListenner.h"
+#include "TCPListener.h"
 #include "TCPConnection.h"
 
 TCPCommunicator::TCPCommunicator()
@@ -8,7 +8,7 @@ TCPCommunicator::TCPCommunicator()
     setCurrentThreadName("TCPCommunicator");
     DEBUG_LOG("create all listenner connections object");
     for (const auto& listenner : ListennerInfoTable){
-        _listenners[listenner.first] = std::make_unique<TCPListenner>(listenner.second, this);
+        _listenners[listenner.first] = std::make_unique<TCPListener>(listenner.second, this);
     }
 
     _connID.store(0);
