@@ -22,7 +22,7 @@ public:
     explicit TCPConnection(ClientConnInfo info);
     ~TCPConnection();
     bool receive_from_client();
-    int read_pdu();
+    int read_pdu(Packet& packet);
     void close_connection();
     void stop();
     void start();

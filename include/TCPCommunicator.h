@@ -23,7 +23,7 @@ public:
     void start();
     bool onAcceptedClient(int clientfd);
     bool onRemovedClient();
-    // void pushToQueue(Packet value);
+    void pushToRxQueue(Packet&& value);
     // bool receive_packet(Packet& value);
 
     
@@ -34,6 +34,7 @@ private:
     std::mutex _connectsMutex;
     std::mutex _removesMutex;
     // ThreadSafeQueue<Packet> _txQueueAllConn;
+    ThreadSafeQueue<Packet> _rxQueueAllConn;   
 };
 
 #endif // TCP_COMMUNICATOR

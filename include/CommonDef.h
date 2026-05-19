@@ -4,7 +4,8 @@
 #include <cstdint>
 #include <string>
 #include <unordered_map>
-
+#include <arpa/inet.h>
+#include <vector>
 typedef std::uint8_t UI_8;
 typedef std::uint16_t UI_16;
 typedef std::uint32_t UI_32;
@@ -34,14 +35,35 @@ struct ClientConnInfo {
     }
 };
 
-struct Packet {
-
-};
-
 const std::unordered_map<ListenID, ListenInfo> ListenerInfoTable = {
     {ListenID_ONE,   {SERVER_IP, 10001}},
     {ListenID_TWO,   {SERVER_IP, 10002}},
     {ListenID_THREE, {SERVER_IP, 10003}}
+}; 
+
+struct Packet { 
+    Packet() {}; 
+    Packet(const std::vector<UI_8>& data) : _rawData(data) {} 
+
+    std::vector<UI_8> _rawData; 
+    UI_32 getPDU() const { 
+        if (_rawData.size() < 8) { 
+            return 0; // Invalid packet 
+        } 
+        return htonl(*(UI_32*)(&_rawData[0])); 
+    } 
+    UI_32 getPayloadLen() const{ 
+        if(_rawData.size() < 8) { 
+            return 0; // Invalid packet 
+        } 
+        return htonl(*(UI_32*)(&_rawData[4])); 
+    } 
+    bool operator == (const Packet& other) const { 
+        return _rawData == other._rawData; 
+    } 
+    bool operator != (const Packet& other) const { 
+        return _rawData != other._rawData;  
+    }
 }; 
 
 #endif // COMMON_DEF
