@@ -9,4 +9,4 @@ set(SOURCES
     src/TCPListener.cpp
 )
 add_executable(tcpserver ${SOURCES})
-target_link_libraries(tcpserver -pthread)
+target_link_libraries(tcpserver -pthread dlt) 

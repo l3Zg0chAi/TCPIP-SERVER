@@ -4,6 +4,8 @@
 #include <thread>
 #include <chrono>
 
+DltContext main_dltCxt; // define context
+
 void Application::init()
 {
     TCPCommunicator::get_instance()->start();
@@ -31,7 +33,11 @@ void Application::receive_from_client()
 }
 
 int main() {
+    DLT_REGISTER_APP("TCPS", "TCP Server Application"); // register app with DLT Daemon
+    DLT_REGISTER_CONTEXT(main_dltCxt, "MAIN", "Main application context"); // register context of app with DLT Daemon
     Application::get_instance()->init();
     Application::get_instance()->execute();
+    DLT_UNREGISTER_CONTEXT(main_dltCxt); // unregister context
+    DLT_UNREGISTER_APP(); // unregister app
     return 0;
 }

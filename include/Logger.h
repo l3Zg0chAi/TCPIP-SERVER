@@ -3,9 +3,6 @@
 #include <pthread.h>
 #include <string>
 #include <cstring>
-#include <sys/syscall.h>
-#include <unistd.h>
-
 inline const char* getCurrentThreadName() {
     thread_local char name[16] = {};
     pthread_getname_np(pthread_self(), name, sizeof(name));
@@ -24,7 +21,31 @@ inline void setCurrentThreadName(const std::string& name){
 #include <thread>
 #include <unistd.h>
 #include <sys/types.h>
+#include <sys/syscall.h>
 
+#ifndef gettid
+#define gettid() syscall(SYS_gettid)
+#endif
+
+#define DLT_DEBUG_LOG
+#ifdef DLT_DEBUG_LOG
+#include <dlt/dlt.h>
+
+extern DltContext main_dltCxt;
+#define DEBUG_LOG(fmt, ...)                                                   \
+    do {                                                                      \
+        char logBuffer[1024];                                                 \
+        std::snprintf(logBuffer, sizeof(logBuffer),                           \
+            "[%d][%s][%s:%d][%s()] " fmt,                                     \
+            static_cast<int>(gettid()),                                       \
+            getCurrentThreadName(),                                           \
+            __FILE__, __LINE__, __func__, ##__VA_ARGS__);                    \
+                                                                              \
+        std::fprintf(stderr, "%s\n", logBuffer);                              \
+        DLT_LOG(main_dltCxt, DLT_LOG_DEBUG, DLT_CSTRING(logBuffer));         \
+    } while (0)
+    /* write the log to dlt level debug, belongs to main_dltCxt context */
+#else
 #define DEBUG_LOG(fmt, ...) \
     do { \
         std::fprintf(stderr, "[%d][%s][%s:%d][%s()] " fmt "\n", \
@@ -32,8 +53,8 @@ inline void setCurrentThreadName(const std::string& name){
             getCurrentThreadName(), \
             __FILE__, __LINE__, __func__, ##__VA_ARGS__); \
     } while (0)
+#endif // DLT_DEBUG_LOG
 #else
 #define DEBUG_LOG(fmt, ...) do {} while (0)
-#endif
-
+#endif // ENABLE_DEBUG_LOG
 #endif // LOGGER_H
