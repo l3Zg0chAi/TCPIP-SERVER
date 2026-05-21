@@ -36,14 +36,9 @@ int main() {
     DLT_REGISTER_APP("STCP", "TCPServer Application"); // register app with DLT Daemon
     DLT_REGISTER_CONTEXT(main_dltCxt, "MAIN", "Main application context"); // register context of app with DLT Daemon
 
-    sleep(2);
-
-DLT_LOG(main_dltCxt, DLT_LOG_FATAL, DLT_CSTRING("SERVER DIRECT FATAL TEST"));
-DLT_LOG(main_dltCxt, DLT_LOG_ERROR, DLT_CSTRING("SERVER DIRECT ERROR TEST"));
-DLT_LOG(main_dltCxt, DLT_LOG_INFO,  DLT_CSTRING("SERVER DIRECT INFO TEST"));
-
     Application::get_instance()->init();
     Application::get_instance()->execute();
+    
     DLT_UNREGISTER_CONTEXT(main_dltCxt); // unregister context
     DLT_UNREGISTER_APP(); // unregister app
     return 0;
