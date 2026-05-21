@@ -26,7 +26,7 @@ public:
     void close_connection();
     void stop();
     void start();
-    bool isStopped();
+    bool isCanRemovedConnection();
 
     void setState(ESTATE_CONNECTIONS state);
 
@@ -42,6 +42,7 @@ private:
 
     ClientConnInfo _info;
     std::atomic<bool> _stopFlag;
+    std::atomic<bool> _isCanRemv;
     ESTATE_CONNECTIONS _state;
 };
 

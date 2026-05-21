@@ -47,7 +47,7 @@ bool TCPCommunicator::onRemovedClient()
     std::vector<std::unique_ptr<TCPConnection>> removed;
     std::lock_guard<std::mutex> lock_rem(_removesMutex);
     for (auto it = _connections.begin(); it != _connections.end(); ) {
-        if (it->second->isStopped()) {
+        if (it->second->isCanRemovedConnection()) {
             DEBUG_LOG("erase conn id=%u", it->first);
 
             removed.push_back(std::move(it->second));

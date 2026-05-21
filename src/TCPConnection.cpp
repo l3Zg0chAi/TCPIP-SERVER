@@ -4,7 +4,7 @@
 #include <CommonFunction.h>
 
 TCPConnection::TCPConnection(ClientConnInfo info) 
-    : _info(info), _stopFlag(true), _state(ESTATE_CONNECTIONS::CLOSED)
+    : _info(info), _stopFlag(true), _isCanRemv(false), _state(ESTATE_CONNECTIONS::CLOSED)
 {
     DEBUG_LOG ("Constructor TCPConnection objejct with ID %u", _info.connID);
 }
@@ -35,9 +35,9 @@ void TCPConnection::stop()
     }
 }
 
-bool TCPConnection::isStopped()
+bool TCPConnection::isCanRemovedConnection()
 {
-    return _stopFlag.load();
+    return _isCanRemv.load();
 }
 
 void TCPConnection::setState(ESTATE_CONNECTIONS state)
@@ -130,7 +130,7 @@ void TCPConnection::rxWorker()
                 break;
             }
             case ESTATE_CONNECTIONS::CLOSED:{
-                _stopFlag.store(true);
+                _isCanRemv.store(true);
                 break;
             }
         }
