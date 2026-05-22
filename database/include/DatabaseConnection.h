@@ -12,7 +12,7 @@ public:
     virtual bool connect() = 0;
     virtual void disconnect() = 0;
     virtual bool isConnected() = 0;
-    virtual sql::Connection* getConnection() = 0;
+    virtual sql::Connection* getConnection() const = 0;
 
     virtual ~IDBConnection() = default;
 };

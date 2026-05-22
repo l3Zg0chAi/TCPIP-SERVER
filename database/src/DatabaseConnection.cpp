@@ -7,8 +7,9 @@ DBConnection::DBConnection(std::string host, std::string username, std::string p
       _passwd(passwd),
       _databaseName(databaseName),
       _driver(nullptr),
-      _connection(nullptr){
-        DEBUG_LOG("create DB Connection to")
+      _connection(nullptr)
+{
+    DEBUG_LOG("create DB Connection to")
 }
 
 DBConnection::~DBConnection(){
