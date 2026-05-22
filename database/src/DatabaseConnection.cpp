@@ -1,11 +1,11 @@
 #include "DatabaseConnection.h"
 #include "Logger.h"
 
-DBConnection::DBConnection(std::string host, std::string username, std::string passwd, std::string databaseName)
-    : _host(host),
-      _username(username),
-      _passwd(passwd),
-      _databaseName(databaseName),
+DBConnection::DBConnection()
+    : _host(""),
+      _username(""),
+      _passwd(""),
+      _databaseName(""),
       _driver(nullptr),
       _connection(nullptr)
 {
@@ -15,6 +15,21 @@ DBConnection::DBConnection(std::string host, std::string username, std::string p
 DBConnection::~DBConnection(){
     disconnect();
 }
+
+bool DBConnection::initialize(std::string host, std::string username, std::string passwd, std::string databaseName)
+{
+    DEBUG_LOG ("create connection to mysql server at %s with user %s", host.c_str(), username.c_str());
+    _host = host;
+    _username = username;
+    _passwd = passwd;
+    _databaseName = databaseName;
+
+    if(!connect()){
+        return false;
+    }
+    return true;
+}
+
 bool DBConnection::connect()
 {
     try {
@@ -25,7 +40,7 @@ bool DBConnection::connect()
         );
 
         if (!_connection) {
-            DEBUG_LOG("[Database] Failed to create connection.");
+            DEBUG_LOG("[Database] Failed to create connection");
             return false;
         }
 

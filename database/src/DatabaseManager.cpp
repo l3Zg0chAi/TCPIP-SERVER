@@ -1,17 +1,9 @@
 #include "DatabaseManager.h"
 #include "Logger.h"
-DBManager::DBManager(IDBConnection *dbconnection)
-    : _dbconnection(dbconnection)
-{
-    DEBUG_LOG("create Data Base Manager");
-}
 
 bool DBManager::initialize()
 {
-    if (_dbconnection == nullptr) return false;
-    if (!_dbconnection->connect()){
-        return false;
-    }
+    DEBUG_LOG ("DB manager initialize");
 
     bool ret = true;
     ret = createDatabase();

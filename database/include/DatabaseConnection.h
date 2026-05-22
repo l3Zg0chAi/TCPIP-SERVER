@@ -9,6 +9,7 @@
 
 class IDBConnection {
 public:
+    virtual bool initialize(std::string host, std::string username, std::string passwd, std::string databaseName) = 0; 
     virtual bool connect() = 0;
     virtual void disconnect() = 0;
     virtual bool isConnected() = 0;
@@ -19,24 +20,15 @@ public:
 
 class DBConnection : public IDBConnection{
 public:
-    static DBConnection* get_instance(
-        std::string host, 
-        std::string username, 
-        std::string passwd, 
-        std::string databaseName)
-    {
-        static DBConnection minstance(host, username, passwd, databaseName);
-        return &minstance;
-    }
-
-    DBConnection(std::string host, std::string username, std::string passwd, std::string databaseName);
+    DBConnection();
     ~DBConnection();
 
-    bool connect();
-    void disconnect();
+    virtual bool initialize(std::string host, std::string username, std::string passwd, std::string databaseName) override; 
+    bool connect() override;
+    void disconnect() override;
 
-    bool isConnected();
-    sql::Connection* getConnection() const;
+    bool isConnected() override;
+    sql::Connection* getConnection() const override;
 
 private:
     std::string _host;

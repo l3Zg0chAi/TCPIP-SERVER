@@ -9,22 +9,22 @@ public:
     virtual bool createDatabase() = 0;
     virtual bool useDatabase() = 0;
     virtual bool createTable() = 0;   
+    virtual bool setDBConnection(IDBConnection* dbconnection){
+        if (_dbconnection != dbconnection){
+            _dbconnection = dbconnection;
+        }
+    }
     virtual ~IDBManager() = default;
+
+protected:
+    IDBConnection* _dbconnection;
 };
 
 class DBManager : public IDBManager {
 public:
-    static DBManager* get_instance(IDBConnection* dbconnection){
-        static DBManager minstance(dbconnection);
-        return &minstance;
-    }
-
-    DBManager(IDBConnection* dbconnection);
-    bool createDatabase();
-    bool useDatabase();
-    bool createTable();
-    bool initialize();
-private:
-    IDBConnection* _dbconnection;
+    bool initialize() override;
+    bool createDatabase() override;
+    bool useDatabase() override;
+    bool createTable() override;
 };
 #endif _DATABASE_MANAGER_
