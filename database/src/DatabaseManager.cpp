@@ -6,26 +6,31 @@ DBManager::DBManager(IDBConnection *dbconnection)
     DEBUG_LOG("create Data Base Manager");
 }
 
-void DBManager::initialize()
+bool DBManager::initialize()
 {
-    if (_dbconnection == nullptr) return;
+    if (_dbconnection == nullptr) return false;
     if (!_dbconnection->connect()){
-        return;
+        return false;
     }
 
-    createDatabase();
-    useDatabase();
-    createTable();
+    bool ret = true;
+    ret = createDatabase();
+    ret = useDatabase();
+    ret = createTable();
+    return ret;
 }
 
-void DBManager::createDatabase()
+bool DBManager::createDatabase()
 {
+    return true;
 }
 
-void DBManager::useDatabase()
+bool DBManager::useDatabase()
 {
+    return true;
 }
 
-void DBManager::createTable()
+bool DBManager::createTable()
 {
+    return true;
 }

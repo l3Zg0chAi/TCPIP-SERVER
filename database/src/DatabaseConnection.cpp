@@ -9,7 +9,7 @@ DBConnection::DBConnection(std::string host, std::string username, std::string p
       _driver(nullptr),
       _connection(nullptr)
 {
-    DEBUG_LOG("create DB Connection to")
+    DEBUG_LOG("create DB Connection to");
 }
 
 DBConnection::~DBConnection(){
@@ -52,7 +52,7 @@ void DBConnection::disconnect()
             DEBUG_LOG("[Database] Disconnected error: %s", e.what());
         }
 
-        m_connection.reset();
+        _connection.reset();
         DEBUG_LOG("[Database] Disconnected");
     }
 }
