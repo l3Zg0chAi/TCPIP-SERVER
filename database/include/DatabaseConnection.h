@@ -14,13 +14,18 @@ public:
     virtual bool isConnected() = 0;
     virtual sql::Connection* getConnection() = 0;
 
-    virtual ~IDBConnection() = 0;
+    virtual ~IDBConnection() = default;
 };
 
 class DBConnection : public IDBConnection{
 public:
-    static IDBConnection* get_instance(){
-        static DBConnection minstance;
+    static DBConnection* get_instance(
+        std::string host, 
+        std::string username, 
+        std::string passwd, 
+        std::string databaseName)
+    {
+        static DBConnection minstance(host, username, passwd, databaseName);
         return &minstance;
     }
 

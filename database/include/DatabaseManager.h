@@ -5,24 +5,25 @@
 
 class IDBManager {
 public:
-    virtual void createDatabase() = 0;
-    virtual void useDatabase() = 0;
-    virtual void createTable() = 0;
-    virtual void initialize() = 0;    
+    virtual bool initialize() = 0; 
+    virtual bool createDatabase() = 0;
+    virtual bool useDatabase() = 0;
+    virtual bool createTable() = 0;   
+    virtual ~IDBManager() = default;
 };
 
 class DBManager : public IDBManager {
 public:
-    static IDBManager* get_instance(){
-        static DBManager minstance;
+    static DBManager* get_instance(IDBConnection* dbconnection){
+        static DBManager minstance(dbconnection);
         return &minstance;
     }
 
     DBManager(IDBConnection* dbconnection);
-    void createDatabase();
-    void useDatabase();
-    void createTable();
-    void initialize();
+    bool createDatabase();
+    bool useDatabase();
+    bool createTable();
+    bool initialize();
 private:
     IDBConnection* _dbconnection;
 };

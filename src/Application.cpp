@@ -3,13 +3,13 @@
 #include "Logger.h"
 #include <thread>
 #include <chrono>
-#include "DatabaseManager.h"
 
 DltContext main_dltCxt; // define context
 
 void Application::init()
 {
     TCPCommunicator::get_instance()->start();
+    _dbmanager->initialize();
 }
 
 void Application::execute()
@@ -37,7 +37,7 @@ int main() {
     DLT_REGISTER_APP("STCP", "TCPServer Application"); // register app with DLT Daemon
     DLT_REGISTER_CONTEXT(main_dltCxt, "MAIN", "Main application context"); // register context of app with DLT Daemon
 
-    Application::get_instance()->init();
+    Application::get_instance(DBManager::get_instance(DBConnection::get_instance("l3Zg0chAi, hailn, hailn, hailnDB")))->init();
     Application::get_instance()->execute();
     
     DLT_UNREGISTER_CONTEXT(main_dltCxt); // unregister context
