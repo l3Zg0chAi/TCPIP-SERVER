@@ -3,6 +3,7 @@
 #include "Logger.h"
 #include <thread>
 #include <chrono>
+#include "DatabaseManager.h"
 
 DltContext main_dltCxt; // define context
 
