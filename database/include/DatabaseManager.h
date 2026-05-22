@@ -5,6 +5,7 @@
 
 class IDBManager {
 public:
+    IDBManager() : _dbconnection(nullptr){}
     virtual bool initialize() = 0; 
     virtual bool createDatabase() = 0;
     virtual bool useDatabase() = 0;

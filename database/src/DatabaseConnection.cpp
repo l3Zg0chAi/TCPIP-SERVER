@@ -9,7 +9,7 @@ DBConnection::DBConnection()
       _driver(nullptr),
       _connection(nullptr)
 {
-    DEBUG_LOG("create DB Connection to");
+    DEBUG_LOG("create DB Connection");
 }
 
 DBConnection::~DBConnection(){
