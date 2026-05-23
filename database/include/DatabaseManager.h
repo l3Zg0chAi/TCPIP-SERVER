@@ -5,27 +5,22 @@
 
 class IDBManager {
 public:
-    IDBManager() : _dbconnection(nullptr){}
     virtual bool initialize() = 0; 
     virtual bool createDatabase() = 0;
     virtual bool useDatabase() = 0;
     virtual bool createTable() = 0;   
-    virtual bool setDBConnection(IDBConnection* dbconnection){
-        if (_dbconnection != dbconnection){
-            _dbconnection = dbconnection;
-        }
-    }
     virtual ~IDBManager() = default;
-
-protected:
-    IDBConnection* _dbconnection;
 };
 
 class DBManager : public IDBManager {
 public:
+    DBManager(IDBConnection* dbconnection) : _dbconnection(dbconnection){}
     bool initialize() override;
     bool createDatabase() override;
     bool useDatabase() override;
     bool createTable() override;
+
+private:
+    IDBConnection* _dbconnection;
 };
 #endif _DATABASE_MANAGER_

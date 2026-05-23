@@ -41,8 +41,7 @@ int main() {
         return -1;
     }
 
-    IDBManager* dbmanager = new DBManager;
-    dbmanager->setDBConnection(dbcon);
+    IDBManager* dbmanager = new DBManager(dbcon);
     dbmanager->initialize();
 
     Application::get_instance()->init();
