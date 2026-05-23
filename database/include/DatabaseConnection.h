@@ -6,6 +6,8 @@
 #include <mysql_driver.h>
 #include <mysql_connection.h>
 #include <cppconn/exception.h>
+#include <cppconn/statement.h>
+#include <cppconn/prepared_statement.h>
 
 class IDBConnection {
 public:
@@ -14,7 +16,7 @@ public:
     virtual void disconnect() = 0;
     virtual bool isConnected() = 0;
     virtual sql::Connection* getConnection() const = 0;
-
+    virtual std::string getDataBaseName() const = 0;
     virtual ~IDBConnection() = default;
 };
 
@@ -29,6 +31,7 @@ public:
 
     bool isConnected() override;
     sql::Connection* getConnection() const override;
+    virtual std::string getDataBaseName() const override;
 
 private:
     std::string _host;

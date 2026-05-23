@@ -37,7 +37,7 @@ int main() {
     DLT_REGISTER_CONTEXT(main_dltCxt, "MAIN", "Main application context"); // register context of app with DLT Daemon
 
     IDBConnection* dbcon = new DBConnection;
-    if (!dbcon->initialize("tcp://192.168.4.114:3306", "hailn", "hailn", "DBhailn")){
+    if (!dbcon->initialize("tcp://192.168.4.114:3306", "hailn", "hailn", "DBFrom_hailn")){
         return -1;
     }
 

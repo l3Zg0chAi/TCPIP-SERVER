@@ -85,3 +85,8 @@ bool DBConnection::isConnected()
 sql::Connection* DBConnection::getConnection() const {
     return _connection.get();
 }
+
+std::string DBConnection::getDataBaseName() const
+{
+    return _databaseName;
+}

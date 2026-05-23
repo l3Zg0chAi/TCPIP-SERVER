@@ -14,6 +14,13 @@ bool DBManager::initialize()
 
 bool DBManager::createDatabase()
 {
+    if (_dbconnection == nullptr || _dbconnection->getConnection() == nullptr) return false;
+
+    std::unique_ptr<sql::Statement> stmt(_dbconnection->getConnection()->createStatement());
+    std::string query =
+        "CREATE DATABASE IF NOT EXISTS " + _dbconnection->getDataBaseName();
+    stmt->execute(query);
+
     return true;
 }
 
