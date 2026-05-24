@@ -21,6 +21,19 @@ bool DBManager::createDatabase()
         "CREATE DATABASE IF NOT EXISTS " + _dbconnection->getDataBaseName();
     stmt->execute(query);
 
+    query =
+        "USE " + _dbconnection->getDataBaseName();
+    stmt->execute(query);
+
+    query = 
+        "CREATE TABLE IF NOT EXISTS PACKET_TABLE ("
+        "id INT AUTO_INCREMENT PRIMARY KEY,"
+        "PDUID INT UNSIGNED NOT NULL,"
+        "PAYLOAD_LENGTH INT UNSIGNED NOT NULL,"
+        "PAYLOAD_DATA BLOB NOT NULL"
+        ");";
+    stmt->execute(query);
+
     return true;
 }
 
