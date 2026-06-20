@@ -11,7 +11,7 @@ typedef std::uint16_t UI_16;
 typedef std::uint32_t UI_32;
 typedef UI_8 ListenID;
 typedef UI_8 ConnectionID;
-
+typedef UI_32 PDUID;
 #define ListenID_ONE 1U
 #define ListenID_TWO 2U
 #define ListenID_THREE 3U
@@ -66,8 +66,52 @@ struct Packet {
     }
 };
 
-struct TCP001{
-    UI_32 PDUID;
+struct InfoTable_packet{
+    UI_32 payloadLength;
+    UI_16 intervals;
+};
+
+#define CONST_PDU_TCP0101 0x2F040101
+#define CONST_PDU_TCP0102 0x2F040102
+#define CONST_PDU_TCP0103 0x2F040103
+#define CONST_PDU_TCP0104 0x2F040104
+
+const std::unordered_map<PDUID, InfoTable_packet> C_InfoTable_Packet= {
+    {CONST_PDU_TCP0101, {100, 50}},
+    {CONST_PDU_TCP0102, {100, 1000}},
+    {CONST_PDU_TCP0103, {100, 100}},
+    {CONST_PDU_TCP0104, {100, 50}},
+};
+
+struct TCP0101{
+    UI_32 pdu;
+    UI_32 payloadLength;
+    
+    UI_8 DATE;
+    UI_8 MONTH;
+    UI_8 YEAR;
+};
+
+struct TCP0102{
+    UI_32 pdu;
+    UI_32 payloadLength;
+    
+    UI_8 DATE;
+    UI_8 MONTH;
+    UI_8 YEAR;
+};
+
+struct TCP0103{
+    UI_32 pdu;
+    UI_32 payloadLength;
+    
+    UI_8 DATE;
+    UI_8 MONTH;
+    UI_8 YEAR;
+};
+
+struct TCP0104{
+    UI_32 pdu;
     UI_32 payloadLength;
     
     UI_8 DATE;

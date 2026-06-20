@@ -30,8 +30,9 @@ public:
 
     void setState(ESTATE_CONNECTIONS state);
 
-    bool send_to_client();
     int write_pdu();
+    bool send_to_client();
+    bool push_to_txqueue(const Packet& packet);
 private:
     void rxWorker();
     void txWorker();

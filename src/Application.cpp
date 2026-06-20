@@ -3,12 +3,14 @@
 #include "Logger.h"
 #include <thread>
 #include <chrono>
+#include <SendCombind.h>
 
 DltContext main_dltCxt; // define context
 
 void Application::init()
 {
     TCPCommunicator::get_instance()->start();
+    SendCombind::get_instance()->start();
 }
 
 void Application::execute()
@@ -16,8 +18,9 @@ void Application::execute()
     while (true){
         DEBUG_LOG("start execute");
         handleFromClient();
-
         TCPCommunicator::get_instance()->onRemovedClient();
+
+        SendCombind::get_instance()->updateAllPacket();
         DEBUG_LOG("end execute");
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
@@ -27,14 +30,16 @@ void Application::handleFromClient()
 {
     Packet packet;
     while(TCPCommunicator::get_instance()->receive_packet(packet)){
-        UI_32 PDUID = packet.getPDU();
+        UI_32 pdu = packet.getPDU();
         
-        switch(PDUID){
-            case:
+        switch(pdu){
+            case CONST_PDU_TCP0101:
             break;
-            case:
+            case CONST_PDU_TCP0102:
             break;
-
+            case CONST_PDU_TCP0103:
+            break;
+            case CONST_PDU_TCP0104:
             default:
             break;
         }

@@ -60,6 +60,44 @@ void TCPConnection::start()
     _txThread = std::thread(&TCPConnection::txWorker, this);
 }
 
+void TCPConnection::rxWorker()
+{
+    setCurrentThreadName("rxThread" + std::to_string(_info.connID));
+    while(!_stopFlag.load()){
+        switch(_state){
+            case ESTATE_CONNECTIONS::CONNECTED:{
+                if (!receive_from_client()){
+                    setState(ESTATE_CONNECTIONS::CLOSED);
+                }
+                break;
+            }
+            case ESTATE_CONNECTIONS::CLOSED:{
+                _isCanRemv.store(true);
+                break;
+            }
+        }
+    }
+}
+
+void TCPConnection::txWorker()
+{
+    setCurrentThreadName("txThread" + std::to_string(_info.connID));
+    while(!_stopFlag.load()){
+        switch(_state){
+            case ESTATE_CONNECTIONS::CONNECTED:{
+                if (!send_to_client()){
+                    setState(ESTATE_CONNECTIONS::CLOSED);
+                }
+                break;
+            }
+            case ESTATE_CONNECTIONS::CLOSED:{
+                _isCanRemv.store(true);
+                break;
+            }
+        }
+    }
+}
+
 bool TCPConnection::receive_from_client()
 {
     Packet packet; // will receive data to here
@@ -104,9 +142,16 @@ int TCPConnection::write_pdu()
     return 0;
 }
 
+bool TCPConnection::push_to_txqueue(const Packet &packet)
+{
+    Packet copyPacket = packet;
+    _txQueue.push(std::move(copyPacket));
+    return true;
+}
+
 int TCPConnection::read_pdu(Packet& packet)
 {
-    packet._rawData.resize(8); // allocate 8byte to receive PDUID and payload length
+    packet._rawData.resize(8); // allocate 8byte to receive pdu and payload length
     int result = 0;
     int byte = 0;
 
@@ -140,42 +185,4 @@ int TCPConnection::read_pdu(Packet& packet)
         byte += result;
     }
     return result;
-}
-
-void TCPConnection::rxWorker()
-{
-    setCurrentThreadName("rxThread" + std::to_string(_info.connID));
-    while(!_stopFlag.load()){
-        switch(_state){
-            case ESTATE_CONNECTIONS::CONNECTED:{
-                if (!receive_from_client()){
-                    setState(ESTATE_CONNECTIONS::CLOSED);
-                }
-                break;
-            }
-            case ESTATE_CONNECTIONS::CLOSED:{
-                _isCanRemv.store(true);
-                break;
-            }
-        }
-    }
-}
-
-void TCPConnection::txWorker()
-{
-    setCurrentThreadName("txThread" + std::to_string(_info.connID));
-    while(!_stopFlag.load()){
-        switch(_state){
-            case ESTATE_CONNECTIONS::CONNECTED:{
-                if (!send_to_client()){
-                    setState(ESTATE_CONNECTIONS::CLOSED);
-                }
-                break;
-            }
-            case ESTATE_CONNECTIONS::CLOSED:{
-                _isCanRemv.store(true);
-                break;
-            }
-        }
-    }
 }
