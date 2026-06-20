@@ -8,6 +8,7 @@ set(SOURCES
     src/TCPConnection.cpp
     src/TCPCommunicator.cpp
     src/TCPListener.cpp
+    src/SendCombind.cpp
 )
 
 set(DATABASE_SOURCES

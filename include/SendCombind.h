@@ -1,0 +1,4 @@
+#ifndef SEND_COMBIND
+#define SEND_COMBIND
+
+#endif // SEND_COMBIND

@@ -15,7 +15,7 @@ void Application::execute()
 {
     while (true){
         DEBUG_LOG("start execute");
-        receive_from_client();
+        handleFromClient();
 
         TCPCommunicator::get_instance()->onRemovedClient();
         DEBUG_LOG("end execute");
@@ -23,33 +23,42 @@ void Application::execute()
     }
 }
 
-void Application::receive_from_client()
+void Application::handleFromClient()
 {
-    // Packet packet;
-    // while(TCPCommunicator::get_instance()->receive_packet(packet)){
-    //     // handle data here
-    // }
-    // DEBUG_LOG("not element in queue any more");
+    Packet packet;
+    while(TCPCommunicator::get_instance()->receive_packet(packet)){
+        UI_32 PDUID = packet.getPDU();
+        
+        switch(PDUID){
+            case:
+            break;
+            case:
+            break;
+
+            default:
+            break;
+        }
+    }
 }
 
 int main() {
     DLT_REGISTER_APP("STCP", "TCPServer Application"); // register app with DLT Daemon
     DLT_REGISTER_CONTEXT(main_dltCxt, "MAIN", "Main application context"); // register context of app with DLT Daemon
 
-    IDBConnection* dbcon = new DBConnection;
-    if (!dbcon->initialize("tcp://192.168.4.114:3306", "hailn", "hailn", "DBFrom_hailn")){
-        return -1;
-    }
+    // IDBConnection* dbcon = new DBConnection;
+    // if (!dbcon->initialize("tcp://192.168.4.114:3306", "hailn", "hailn", "DBFrom_hailn")){
+    //     return -1;
+    // }
 
-    IDBManager* dbmanager = new DBManager(dbcon);
-    dbmanager->initialize();
+    // IDBManager* dbmanager = new DBManager(dbcon);
+    // dbmanager->initialize();
 
     Application::get_instance()->init();
     Application::get_instance()->execute();
 
-    dbcon->disconnect();
-    delete dbcon;
-    delete dbmanager;
+    // dbcon->disconnect();
+    // delete dbcon;
+    // delete dbmanager;
     
     DLT_UNREGISTER_CONTEXT(main_dltCxt); // unregister context
     DLT_UNREGISTER_APP(); // unregister app

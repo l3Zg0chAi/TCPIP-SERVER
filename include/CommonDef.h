@@ -64,6 +64,15 @@ struct Packet {
     bool operator != (const Packet& other) const { 
         return _rawData != other._rawData;  
     }
-}; 
+};
+
+struct TCP001{
+    UI_32 PDUID;
+    UI_32 payloadLength;
+    
+    UI_8 DATE;
+    UI_8 MONTH;
+    UI_8 YEAR;
+};
 
 #endif // COMMON_DEF

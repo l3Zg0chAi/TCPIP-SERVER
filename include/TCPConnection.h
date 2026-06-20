@@ -30,6 +30,8 @@ public:
 
     void setState(ESTATE_CONNECTIONS state);
 
+    bool send_to_client();
+    int write_pdu();
 private:
     void rxWorker();
     void txWorker();
@@ -44,6 +46,7 @@ private:
     std::atomic<bool> _stopFlag;
     std::atomic<bool> _isCanRemv;
     ESTATE_CONNECTIONS _state;
+    ThreadSafeQueue<Packet> _txQueue;
 };
 
 #endif // TCPCONNECTION_H

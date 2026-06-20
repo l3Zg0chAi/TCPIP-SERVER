@@ -11,7 +11,7 @@ public:
 
     void init();
     void execute();
-    void receive_from_client();
+    void handleFromClient();
 };
 
 #endif // APPLICATION_H

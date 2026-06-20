@@ -89,10 +89,10 @@ ssize_t EthernetTimeSyncRecv(int _sockfd, uint8_t* buffer, int length, int secon
     timeout.tv_usec = microsecond;
     int ret = select(_sockfd + 1, &readfds, nullptr, nullptr, &timeout);
     if (ret == 0){
-        DEBUG_LOG("no data comes");
+        DEBUG_LOG("select timeout: socket not ready for reading");
     }
     else if (ret < 0){
-        DEBUG_LOG("select fail errno=%d error=%s", errno, strerror(errno));
+        DEBUG_LOG("select receive fail errno=%d error=%s", errno, strerror(errno));
     } 
     else{
         ret = recv(_sockfd, buffer, length, 0);
@@ -106,6 +106,32 @@ ssize_t EthernetTimeSyncRecv(int _sockfd, uint8_t* buffer, int length, int secon
         }
         else {
             DEBUG_LOG("recv fail errno=%d error=%s", errno, strerror(errno));
+        }
+    }
+    DEBUG_LOG("ret %d", ret);
+    return ret;
+}
+
+ssize_t EthernetTimeSyncSend(int _sockfd, uint8_t* buffer, int length, int second, int microsecond){
+    fd_set writefds;
+    FD_ZERO(&writefds);
+    FD_SET(_sockfd, &writefds);
+    struct timeval timeout;
+    timeout.tv_sec = second;   // 2 second
+    timeout.tv_usec = microsecond;
+    int ret = select(_sockfd + 1, nullptr, &writefds, nullptr, &timeout);
+    if (ret == 0){
+        DEBUG_LOG("select timeout: socket is not ready for writing");
+    }
+    else if (ret < 0){
+        DEBUG_LOG("select send fail errno=%d error=%s", errno, strerror(errno));
+    } 
+    else{
+        /*SIGPIPE là signal của linux, xảy ra khi program cố send vào socket đã close
+        MSG_NOSIGNAL mean dont kill process, instead of return error */
+        ret = send(_sockfd, buffer, length, MSG_NOSIGNAL);
+        if (ret < 0) {
+            DEBUG_LOG("send fail errno=%d error=%s", errno, strerror(errno));
         }
     }
     DEBUG_LOG("ret %d", ret);

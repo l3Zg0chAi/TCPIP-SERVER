@@ -64,10 +64,10 @@ void TCPCommunicator::pushToRxQueue(Packet&& value)
     _rxQueueAllConn.push(std::move(value));
 }
 
-// bool TCPCommunicator::receive_packet(Packet &value)
-// {
-//     if (_rxQueueAllConn.try_pop(value)){
-//         return true;
-//     }
-//     return false;
-// }
+bool TCPCommunicator::receive_packet(Packet &value)
+{
+    if (_rxQueueAllConn.try_pop(value)){
+        return true;
+    }
+    return false;
+}

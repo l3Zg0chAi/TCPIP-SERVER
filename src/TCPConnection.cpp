@@ -80,6 +80,30 @@ bool TCPConnection::receive_from_client()
     return true;
 }
 
+bool TCPConnection::send_to_client()
+{
+    Packet packet;
+    while(_txQueue.wait_and_pop(packet)){
+        int payload_length = packet.getPayloadLen();
+        int total_length = 8 + payload_length;
+        int byte = 0;
+        while (byte < total_length){
+            int ret = EthernetTimeSyncSend(_info.sockfd, packet._rawData.data()+byte,total_length-byte,2,0);
+            if (ret < 0){
+                return false;
+            }
+            byte += ret;
+        }
+        DEBUG_LOG("packet %u send %u byte, done", packet.getPDU(), byte);
+    }
+    return true;
+}
+
+int TCPConnection::write_pdu()
+{
+    return 0;
+}
+
 int TCPConnection::read_pdu(Packet& packet)
 {
     packet._rawData.resize(8); // allocate 8byte to receive PDUID and payload length
@@ -141,6 +165,17 @@ void TCPConnection::txWorker()
 {
     setCurrentThreadName("txThread" + std::to_string(_info.connID));
     while(!_stopFlag.load()){
-        
+        switch(_state){
+            case ESTATE_CONNECTIONS::CONNECTED:{
+                if (!send_to_client()){
+                    setState(ESTATE_CONNECTIONS::CLOSED);
+                }
+                break;
+            }
+            case ESTATE_CONNECTIONS::CLOSED:{
+                _isCanRemv.store(true);
+                break;
+            }
+        }
     }
 }

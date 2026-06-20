@@ -24,7 +24,7 @@ public:
     bool onAcceptedClient(int clientfd);
     bool onRemovedClient();
     void pushToRxQueue(Packet&& value);
-    // bool receive_packet(Packet& value);
+    bool receive_packet(Packet& value);
 
     
 private:
@@ -33,7 +33,6 @@ private:
     std::atomic<UI_8> _connID;
     std::mutex _connectsMutex;
     std::mutex _removesMutex;
-    // ThreadSafeQueue<Packet> _txQueueAllConn;
     ThreadSafeQueue<Packet> _rxQueueAllConn;   
 };
 
