@@ -72,7 +72,7 @@ bool TCPCommunicator::receive_packet(Packet &packet)
     return false;
 }
 
-bool TCPCommunicator::send_packet(ListenID lisenId, Packet packet)
+void TCPCommunicator::send_packet(ListenID lisenId, Packet packet)
 {
     for(auto& conn : _connections){
         if (conn.second->getListenId() == lisenId){

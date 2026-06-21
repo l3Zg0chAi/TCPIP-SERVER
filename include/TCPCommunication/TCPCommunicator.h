@@ -25,7 +25,7 @@ public:
     bool onRemovedClient();
     void pushToRxQueue(Packet&& packet);
     bool receive_packet(Packet& packet);
-    bool send_packet(ListenID lisenId, Packet packet);
+    void send_packet(ListenID lisenId, Packet packet);
 
     void getPDUData(PDUID id, Packet& packet);
 private:
