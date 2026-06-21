@@ -149,6 +149,11 @@ bool TCPConnection::push_to_txqueue(const Packet &packet)
     return true;
 }
 
+ListenID TCPConnection::getListenId()
+{
+    return _info.lisID;
+}
+
 int TCPConnection::read_pdu(Packet& packet)
 {
     packet._rawData.resize(8); // allocate 8byte to receive pdu and payload length

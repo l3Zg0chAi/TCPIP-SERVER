@@ -21,11 +21,11 @@ public:
     ~TCPCommunicator();
 
     void start();
-    bool onAcceptedClient(int clientfd);
+    bool onAcceptedClient(int clientfd, ListenID listenID);
     bool onRemovedClient();
-    void pushToRxQueue(Packet&& value);
-    bool receive_packet(Packet& value);
-
+    void pushToRxQueue(Packet&& packet);
+    bool receive_packet(Packet& packet);
+    bool send_packet(ListenID lisenId, Packet packet);
     
 private:
     std::unordered_map<ListenID, std::unique_ptr<TCPListener>> _listeners;

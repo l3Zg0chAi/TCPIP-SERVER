@@ -19,26 +19,29 @@ typedef UI_32 PDUID;
 #define SERVER_IP "192.168.24.128"
 
 struct ListenInfo {
+    ListenID listenID;
     std::string serverADDR;
     UI_32 serverPort;
 };
 
 struct ClientConnInfo {
     int sockfd;
+    ListenID lisID;
     ConnectionID connID;
-    ClientConnInfo(int sock, ConnectionID ID) : sockfd(sock), connID(ID){}
+    ClientConnInfo(int sock, ListenID lisId, ConnectionID ID) : sockfd(sock), lisID(lisId), connID(ID){}
 
     ClientConnInfo& operator=(const ClientConnInfo& other){
         sockfd = other.sockfd;
         connID = other.connID;
+        lisID  = other.lisID;
         return *this;
     }
 };
 
 const std::unordered_map<ListenID, ListenInfo> ListenerInfoTable = {
-    {ListenID_ONE,   {SERVER_IP, 10001}},
-    {ListenID_TWO,   {SERVER_IP, 10002}},
-    {ListenID_THREE, {SERVER_IP, 10003}}
+    {ListenID_ONE,   {ListenID_ONE,   SERVER_IP, 10001}},
+    {ListenID_TWO,   {ListenID_TWO,   SERVER_IP, 10002}},
+    {ListenID_THREE, {ListenID_THREE, SERVER_IP, 10003}}
 }; 
 
 struct Packet { 
@@ -67,6 +70,7 @@ struct Packet {
 };
 
 struct InfoTable_packet{
+    ListenID listenId;
     UI_32 payloadLength;
     UI_16 intervals;
 };
@@ -77,10 +81,10 @@ struct InfoTable_packet{
 #define CONST_PDU_TCP0104 0x2F040104
 
 const std::unordered_map<PDUID, InfoTable_packet> C_InfoTable_Packet= {
-    {CONST_PDU_TCP0101, {100, 50}},
-    {CONST_PDU_TCP0102, {100, 1000}},
-    {CONST_PDU_TCP0103, {100, 100}},
-    {CONST_PDU_TCP0104, {100, 50}},
+    {CONST_PDU_TCP0101, ListenID_ONE,   {ListenID_ONE, 100, 50    }},
+    {CONST_PDU_TCP0102, ListenID_THREE, {ListenID_THREE, 100, 1000}},
+    {CONST_PDU_TCP0103, ListenID_TWO,   {ListenID_TWO, 100, 100   }},
+    {CONST_PDU_TCP0104, ListenID_ONE,   {ListenID_ONE, 100, 50    }},
 };
 
 struct TCP0101{

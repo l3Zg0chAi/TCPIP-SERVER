@@ -89,6 +89,6 @@ void TCPListener::acceptWorker()
         UI_16 clientPort = ntohs(clientAddr.sin_port);
         DEBUG_LOG("accepted client %s:%u", clientIp.c_str(), clientPort);
 
-        _servercomm->onAcceptedClient(client_fd);
+        _servercomm->onAcceptedClient(client_fd, _listeninfo.listenID);
     }
 }

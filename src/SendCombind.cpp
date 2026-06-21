@@ -1,5 +1,5 @@
 #include "SendCombind.h"
-
+#include "TCPCommunicator.h"
 SendCombind::SendCombind() : _stopFlag(true)
 {
     init();
@@ -12,12 +12,12 @@ SendCombind::~SendCombind()
 void SendCombind::init()
 {
     for(const auto& task : C_InfoTable_Packet){
-        PDUID pduid = task.first;
         const InfoTable_packet& info = task.second;
+        CyclicTxPacket cyclicPacket(info.listenId, std::chrono::microseconds(info.intervals), std::chrono::steady_clock::now());
+        tasks[task.first] = std::move(cyclicPacket);
 
         Packet packet;
-        CyclicTxPacket cyclicPacket(packet, std::chrono::microseconds(info.intervals), std::chrono::steady_clock::now());
-        tasks[task.first] = std::move(cyclicPacket);
+        packets[task.first] = std::move(packet);
     }
 }
 
@@ -40,9 +40,10 @@ void SendCombind::send_cyclic()
         auto now = std::chrono::steady_clock()::now();
         for(auto& task : tasks){
             PDUID pduid = task.first;
+            ListenID listenid = task.second.listenId;
             CyclicTxPacket& cyclicPacket = task.second;
             if (now >= cyclicPacket.nextSendTime){
-                
+                TCPCommunicator::get_instance()->send_packet(listenid, packets[pduid]);
                 cyclicPacket.nextSendTime = now + cyclicPacket.intervals;
             }
         }

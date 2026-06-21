@@ -11,12 +11,12 @@
 struct CyclicTxPacket{
     CyclicTxPacket(){}
     CyclicTxPacket(
-        const Packet& packet_,
+        ListenID id_,
         std::chrono::microseconds intervals_,
         std::chrono::steady_clock::time_point nextSendTime_
-    ) : packet(packet_), intervals(intervals_), nextSendTime(nextSendTime_) {}
+    ) : listenId(id_), intervals(intervals_), nextSendTime(nextSendTime_) {}
 
-    Packet packet;
+    ListenID listenId;
     std::chrono::microseconds intervals;
     std::chrono::steady_clock::time_point nextSendTime;
 };
@@ -40,6 +40,7 @@ private:
     std::thread _cyclicThread;
     std::mutex _cyclicMutex;
 
+    std::unordered_map<PDUID, Packet> packets;
     std::unordered_map<PDUID, CyclicTxPacket> tasks;
     std::condition_variable _cv;
     std::atomic<bool> _stopFlag;

@@ -25,11 +25,11 @@ void TCPCommunicator::start()
     }
 }
 
-bool TCPCommunicator::onAcceptedClient(int clientfd)
+bool TCPCommunicator::onAcceptedClient(int clientfd, ListenID listenID)
 {
     DEBUG_LOG("on accept client connection");
     _connID.fetch_add(1);
-    auto clientConn = std::make_unique<TCPConnection>(ClientConnInfo(clientfd, _connID));
+    auto clientConn = std::make_unique<TCPConnection>(ClientConnInfo(clientfd, listenID, _connID));
     TCPConnection* rawConn = clientConn.get();
     {
         std::lock_guard<std::mutex> lockCon(_connectsMutex);
@@ -59,15 +59,24 @@ bool TCPCommunicator::onRemovedClient()
     return true;
 }
 
-void TCPCommunicator::pushToRxQueue(Packet&& value)
+void TCPCommunicator::pushToRxQueue(Packet&& packet)
 {
-    _rxQueueAllConn.push(std::move(value));
+    _rxQueueAllConn.push(std::move(packet));
 }
 
-bool TCPCommunicator::receive_packet(Packet &value)
+bool TCPCommunicator::receive_packet(Packet &packet)
 {
-    if (_rxQueueAllConn.try_pop(value)){
+    if (_rxQueueAllConn.try_pop(packet)){
         return true;
     }
     return false;
+}
+
+bool TCPCommunicator::send_packet(ListenID lisenId, Packet packet)
+{
+    for(auto& conn : _connections){
+        if (conn.second->getListenId() == lisenId){
+            conn.second->push_to_txqueue(packet);
+        }
+    }
 }
