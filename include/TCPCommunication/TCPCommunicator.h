@@ -26,7 +26,8 @@ public:
     void pushToRxQueue(Packet&& packet);
     bool receive_packet(Packet& packet);
     bool send_packet(ListenID lisenId, Packet packet);
-    
+
+    void getPDUData(PDUID id, Packet& packet);
 private:
     std::unordered_map<ListenID, std::unique_ptr<TCPListener>> _listeners;
     std::unordered_map<ConnectionID, std::unique_ptr<TCPConnection>> _connections;

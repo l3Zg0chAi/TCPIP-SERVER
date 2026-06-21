@@ -37,7 +37,7 @@ void SendCombind::send_cyclic()
             return;
         }
 
-        auto now = std::chrono::steady_clock()::now();
+        auto now = std::chrono::steady_clock::now();
         for(auto& task : tasks){
             PDUID pduid = task.first;
             ListenID listenid = task.second.listenId;
@@ -52,7 +52,11 @@ void SendCombind::send_cyclic()
 
 void SendCombind::updateAllPacket()
 {
-
+    for(auto& packet : packets){
+        PDUID _id = packet.first;
+        Packet& _packet = packet.second;
+        TCPCommunicator::get_instance()->getPDUData(_id, _packet);
+    }
 }
 
 void SendCombind::trigger()

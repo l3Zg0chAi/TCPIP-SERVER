@@ -81,10 +81,10 @@ struct InfoTable_packet{
 #define CONST_PDU_TCP0104 0x2F040104
 
 const std::unordered_map<PDUID, InfoTable_packet> C_InfoTable_Packet= {
-    {CONST_PDU_TCP0101, ListenID_ONE,   {ListenID_ONE, 100, 50    }},
-    {CONST_PDU_TCP0102, ListenID_THREE, {ListenID_THREE, 100, 1000}},
-    {CONST_PDU_TCP0103, ListenID_TWO,   {ListenID_TWO, 100, 100   }},
-    {CONST_PDU_TCP0104, ListenID_ONE,   {ListenID_ONE, 100, 50    }},
+    {CONST_PDU_TCP0101, {ListenID_ONE, 100, 50    }},
+    {CONST_PDU_TCP0102, {ListenID_THREE, 100, 1000}},
+    {CONST_PDU_TCP0103, {ListenID_TWO, 100, 100   }},
+    {CONST_PDU_TCP0104, {ListenID_ONE, 100, 50    }},
 };
 
 struct TCP0101{

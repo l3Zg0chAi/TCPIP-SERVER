@@ -80,3 +80,17 @@ bool TCPCommunicator::send_packet(ListenID lisenId, Packet packet)
         }
     }
 }
+
+void TCPCommunicator::getPDUData(PDUID id, Packet &packet)
+{
+    switch(id){
+        case CONST_PDU_TCP0101:
+        break;
+        case CONST_PDU_TCP0102:
+        break;
+        case CONST_PDU_TCP0103:
+        break;
+        case CONST_PDU_TCP0104:
+        break; 
+    }
+}
