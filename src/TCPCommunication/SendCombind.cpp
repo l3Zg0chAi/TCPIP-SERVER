@@ -7,6 +7,10 @@ SendCombind::SendCombind() : _stopFlag(true)
 
 SendCombind::~SendCombind()
 {
+    _stopFlag.store(true);
+    if (_cyclicThread.joinable()){
+        _cyclicThread.join();
+    }
 }
 
 void SendCombind::init()
@@ -33,29 +37,32 @@ void SendCombind::start()
 void SendCombind::send_cyclic()
 {
     while(!_stopFlag){
-        if (_stopFlag){
-            return;
-        }
-
+        std::unique_lock<std::mutex> lock(_cyclicMutex);
         auto now = std::chrono::steady_clock::now();
+        auto nextWakeup = now + std::chrono::hours(24);
         for(auto& task : tasks){
             PDUID pduid = task.first;
             ListenID listenid = task.second.listenId;
             CyclicTxPacket& cyclicPacket = task.second;
             if (now >= cyclicPacket.nextSendTime){
                 TCPCommunicator::get_instance()->send_packet(listenid, packets[pduid]);
-                cyclicPacket.nextSendTime = now + cyclicPacket.intervals;
+                cyclicPacket.nextSendTime = std::chrono::steady_clock::now() + cyclicPacket.intervals;
+            }
+
+            if (nextWakeup > cyclicPacket.nextSendTime){
+                nextWakeup = cyclicPacket.nextSendTime;
             }
         }
+        _cv.wait_until(lock, nextWakeup);
     }
 }
 
 void SendCombind::updateAllPacket()
 {
     for(auto& packet : packets){
-        PDUID _id = packet.first;
+        PDUID pduid = packet.first;
         Packet& _packet = packet.second;
-        TCPCommunicator::get_instance()->getPDUData(_id, _packet);
+        TCPCommunicator::get_instance()->getPDUData(pduid, _packet);
     }
 }
 
